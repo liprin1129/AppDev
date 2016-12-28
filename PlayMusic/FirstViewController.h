@@ -7,9 +7,14 @@
 //
 
 #import <UIKit/UIKit.h>
+#import "AppDelegate.h"
 
 @interface FirstViewController : UIViewController
 
+@property (strong, nonatomic) AppDelegate *appDelegate;
+@property (strong, nonatomic) id audioHandler;
+
+- (IBAction)audioStreamStartButton:(id)sender;
 
 @end
 

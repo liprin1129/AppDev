@@ -16,7 +16,9 @@
 
 - (void)viewDidLoad {
     [super viewDidLoad];
-    // Do any additional setup after loading the view, typically from a nib.
+    
+    self.appDelegate = (AppDelegate *)[[UIApplication sharedApplication] delegate];
+    //[[self.appDelegate audioInOutHandler] init];
 }
 
 
@@ -26,4 +28,7 @@
 }
 
 
+- (IBAction)audioStreamStartButton:(id)sender {
+    [[self.appDelegate audioInOutHandler] startAUGraph];
+}
 @end

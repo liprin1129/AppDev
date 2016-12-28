@@ -7,11 +7,13 @@
 //
 
 #import <UIKit/UIKit.h>
+#import "AudioInOutHandler.h"
 
 @interface AppDelegate : UIResponder <UIApplicationDelegate>
 
 @property (strong, nonatomic) UIWindow *window;
 
+@property (strong, nonatomic) AudioInOutHandler *audioInOutHandler;
 
 @end
 
