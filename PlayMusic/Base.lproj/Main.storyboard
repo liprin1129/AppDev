@@ -22,7 +22,7 @@
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="4hs-iX-RCo">
-                                <rect key="frame" x="46" y="207" width="40" height="30"/>
+                                <rect key="frame" x="46" y="208" width="40" height="30"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                 <color key="tintColor" red="1" green="0.0" blue="0.50196081400000003" alpha="1" colorSpace="calibratedRGB"/>
                                 <state key="normal" title="Audio">
@@ -32,12 +32,21 @@
                                     <action selector="audioStreamStartButton:" destination="9pv-A4-QxB" eventType="touchUpInside" id="ewL-QO-NHU"/>
                                 </connections>
                             </button>
+                            <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="HCb-8L-gTc">
+                                <rect key="frame" x="256" y="207" width="79" height="30"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                <state key="normal" title="Connection"/>
+                                <connections>
+                                    <action selector="connectionStartButton:" destination="9pv-A4-QxB" eventType="touchUpInside" id="LNe-dM-bsN"/>
+                                </connections>
+                            </button>
                         </subviews>
                         <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                     </view>
                     <tabBarItem key="tabBarItem" title="First" image="first" id="acW-dT-cKf"/>
                     <connections>
-                        <outlet property="audioButton" destination="4hs-iX-RCo" id="Nha-V5-7Tg"/>
+                        <outlet property="audioButton" destination="4hs-iX-RCo" id="Mg5-qe-dP4"/>
+                        <outlet property="connectionButton" destination="HCb-8L-gTc" id="wL3-mj-Tmb"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="W5J-7L-Pyd" sceneMemberID="firstResponder"/>

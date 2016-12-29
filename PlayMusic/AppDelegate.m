@@ -17,6 +17,7 @@
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
     self.audioInOutHandler = [[AudioInOutHandler alloc] init];
+    self.connectionHandler = [[ConnectionHandler alloc] init];
     return YES;
 }
 
