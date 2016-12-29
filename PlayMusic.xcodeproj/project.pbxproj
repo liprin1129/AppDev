@@ -9,6 +9,7 @@
 /* Begin PBXBuildFile section */
 		CBBF796E1E147A62005547CC /* AudioInOutHandler.m in Sources */ = {isa = PBXBuildFile; fileRef = CBBF796D1E147A62005547CC /* AudioInOutHandler.m */; };
 		CBBF79721E1483E9005547CC /* AVFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CBBF79711E1483E9005547CC /* AVFoundation.framework */; };
+		CBBF79781E15B90F005547CC /* ConnectionHandler.m in Sources */ = {isa = PBXBuildFile; fileRef = CBBF79771E15B90F005547CC /* ConnectionHandler.m */; };
 		CBEC48651E14758D00806748 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = CBEC48641E14758D00806748 /* main.m */; };
 		CBEC48681E14758D00806748 /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = CBEC48671E14758D00806748 /* AppDelegate.m */; };
 		CBEC486B1E14758D00806748 /* FirstViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = CBEC486A1E14758D00806748 /* FirstViewController.m */; };
@@ -41,6 +42,8 @@
 		CBBF796C1E147A62005547CC /* AudioInOutHandler.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AudioInOutHandler.h; sourceTree = "<group>"; };
 		CBBF796D1E147A62005547CC /* AudioInOutHandler.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AudioInOutHandler.m; sourceTree = "<group>"; };
 		CBBF79711E1483E9005547CC /* AVFoundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AVFoundation.framework; path = System/Library/Frameworks/AVFoundation.framework; sourceTree = SDKROOT; };
+		CBBF79761E15B90F005547CC /* ConnectionHandler.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ConnectionHandler.h; sourceTree = "<group>"; };
+		CBBF79771E15B90F005547CC /* ConnectionHandler.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ConnectionHandler.m; sourceTree = "<group>"; };
 		CBEC48601E14758D00806748 /* PlayMusic.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = PlayMusic.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		CBEC48641E14758D00806748 /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
 		CBEC48661E14758D00806748 /* AppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AppDelegate.h; sourceTree = "<group>"; };
@@ -92,6 +95,8 @@
 			children = (
 				CBBF796C1E147A62005547CC /* AudioInOutHandler.h */,
 				CBBF796D1E147A62005547CC /* AudioInOutHandler.m */,
+				CBBF79761E15B90F005547CC /* ConnectionHandler.h */,
+				CBBF79771E15B90F005547CC /* ConnectionHandler.m */,
 			);
 			name = Handlers;
 			sourceTree = "<group>";
@@ -310,6 +315,7 @@
 				CBBF796E1E147A62005547CC /* AudioInOutHandler.m in Sources */,
 				CBEC48681E14758D00806748 /* AppDelegate.m in Sources */,
 				CBEC486B1E14758D00806748 /* FirstViewController.m in Sources */,
+				CBBF79781E15B90F005547CC /* ConnectionHandler.m in Sources */,
 				CBEC48651E14758D00806748 /* main.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

@@ -11,12 +11,15 @@
 
 @interface FirstViewController : UIViewController
 
-@property (strong, nonatomic) AppDelegate *appDelegate;
+//@property (strong, nonatomic) AppDelegate *appDelegate;
 @property (strong, nonatomic) id audioHandler;
+@property (strong, nonatomic) id connectionHandler;
 
 @property (weak, nonatomic) IBOutlet UIButton *audioButton;
+@property (weak, nonatomic) IBOutlet UIButton *connectionButton;
 
 - (IBAction)audioStreamStartButton:(id)sender;
+- (IBAction)connectionStartButton:(id)sender;
 
 @end
 
