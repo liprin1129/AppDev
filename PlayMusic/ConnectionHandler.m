@@ -53,7 +53,8 @@
     self.handler = invitationHandler;
     
     self.invitationAccept = YES;
-    self.handler(self.invitationAccept, self.session);
+    NSLog(@"\n\n\n\n!!!!!!!!!!!!!\n\n\n\n");
+    // self.handler(self.invitationAccept, self.session);
 }
 
 #pragma mark MCBrowserViewControllerDelegate methods
