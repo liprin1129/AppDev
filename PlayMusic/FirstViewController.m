@@ -17,8 +17,7 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     
-    self.appDelegate = (AppDelegate *)[[UIApplication sharedApplication] delegate];
-    //[[self.appDelegate audioInOutHandler] init];
+    _audioHandler = [(AppDelegate *)[[UIApplication sharedApplication] delegate] audioInOutHandler];
 }
 
 
@@ -29,6 +28,14 @@
 
 
 - (IBAction)audioStreamStartButton:(id)sender {
-    [[self.appDelegate audioInOutHandler] startAUGraph];
+    if (!self.audioButton.selected) {
+        
+        [self.audioHandler startAUGraph];
+        self.audioButton.selected = YES;
+    } else {
+        
+        [self.audioHandler stopAUGraph];
+        self.audioButton.selected = NO;
+    }
 }
 @end
