@@ -14,6 +14,8 @@
 @property (strong, nonatomic) AppDelegate *appDelegate;
 @property (strong, nonatomic) id audioHandler;
 
+@property (weak, nonatomic) IBOutlet UIButton *audioButton;
+
 - (IBAction)audioStreamStartButton:(id)sender;
 
 @end
