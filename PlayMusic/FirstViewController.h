@@ -11,7 +11,6 @@
 
 @interface FirstViewController : UIViewController
 
-//@property (strong, nonatomic) AppDelegate *appDelegate;
 @property (strong, nonatomic) id audioHandler;
 @property (strong, nonatomic) id connectionHandler;
 
