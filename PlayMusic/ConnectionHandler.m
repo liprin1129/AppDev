@@ -52,9 +52,8 @@
     
     self.handler = invitationHandler;
     
-    NSLog(@"\nInvitation!\n");
-    self.handler(YES, self.session);
-    NSLog(@"\nAccept!\n");
+    self.invitationAccept = YES;
+    self.handler(self.invitationAccept, self.session);
 }
 
 #pragma mark MCBrowserViewControllerDelegate methods

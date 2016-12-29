@@ -23,6 +23,9 @@ typedef void(^InvitationHandler)(BOOL accept, MCSession *session);
 
 @property (copy, nonatomic) InvitationHandler handler;
 
+// for notification centre
+@property (assign, nonatomic) BOOL invitationAccept;
+
 #pragma mark Public methods
 - (void)setPeerAndSessionWithDisplayName:(NSString *)peerName;
 - (void)multichannelBrowserSetup: (id) objectID;
