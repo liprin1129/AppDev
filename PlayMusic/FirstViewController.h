@@ -9,16 +9,19 @@
 #import <UIKit/UIKit.h>
 #import "AppDelegate.h"
 
-@interface FirstViewController : UIViewController
+@interface FirstViewController : UIViewController <MCBrowserViewControllerDelegate>
 
 @property (strong, nonatomic) id audioHandler;
 @property (strong, nonatomic) id connectionHandler;
 
 @property (weak, nonatomic) IBOutlet UIButton *audioButton;
 @property (weak, nonatomic) IBOutlet UIButton *connectionButton;
+@property (weak, nonatomic) IBOutlet UIButton *streamButton;
 
-- (IBAction)audioStreamStartButton:(id)sender;
+- (IBAction)audioStartButton:(id)sender;
 - (IBAction)connectionStartButton:(id)sender;
+- (IBAction)connectedStreamStartButton:(id)sender;
+
 
 @end
 

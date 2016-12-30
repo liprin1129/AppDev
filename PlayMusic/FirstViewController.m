@@ -56,8 +56,21 @@
 }
 */
 
+#pragma mark MCBrowserViewControllerDelegate methods
+- (void)browserViewControllerDidFinish:(MCBrowserViewController *)browserViewController{
+    [browserViewController dismissViewControllerAnimated:YES completion:nil];
+}
+
+- (void)browserViewControllerWasCancelled:(MCBrowserViewController *)browserViewController{
+    [browserViewController dismissViewControllerAnimated:YES completion:nil];
+    
+    // check the number of connections
+    MCSession *session = (MCSession*)[self.connectionHandler session];
+    NSLog(@"%lu\n\n\n\n\n\n", (unsigned long)[[session connectedPeers] count]);
+}
+
 # pragma mark button click management
-- (IBAction)audioStreamStartButton:(id)sender {
+- (IBAction)audioStartButton:(id)sender {
     if (!self.audioButton.selected) {
         
         [self.audioHandler startAUGraph];
@@ -70,14 +83,19 @@
 }
 
 - (IBAction)connectionStartButton:(id)sender {
-    if (!self.connectionButton.selected) {
-        [self.connectionHandler startAvertising];
-        [self.connectionHandler multichannelBrowserSetup:self];
-        [self presentViewController:[self.connectionHandler browerViewController] animated:YES completion:nil];
-        self.connectionButton.selected = YES;
+    [self.connectionHandler startAvertising];
+    [self.connectionHandler multichannelBrowserSetup:self];
+    [self presentViewController:[self.connectionHandler browerViewController] animated:YES completion:nil];
+}
+
+- (IBAction)connectedStreamStartButton:(id)sender {
+    if (!self.streamButton.selected) {
+        [self.connectionHandler startStream];
+        NSLog(@"\n\n stream opened");
+        
+        self.streamButton.selected = YES;
     } else {
-        [self.connectionHandler stopAdvertising];
-        self.connectionButton.selected = NO;
+        self.streamButton.selected = NO;
     }
 }
 @end
