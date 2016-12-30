@@ -30,11 +30,13 @@
     self.connectionHandler = [_appDelegate connectionHandler];
     [self.connectionHandler setPeerAndSessionWithDisplayName:[UIDevice currentDevice].name];
     
+    /*
     // set KVO for connection invitation
     [self.connectionHandler addObserver:self
                              forKeyPath:@"invitationAccept"
                                 options:NSKeyValueObservingOptionNew | NSKeyValueObservingOptionOld
                                 context:nil];
+     */
 }
 
 
@@ -43,14 +45,16 @@
     // Dispose of any resources that can be recreated.
 }
 
+/*
 # pragma mark KVO for accepted invitation
 - (void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary<NSKeyValueChangeKey,id> *)change context:(void *)context{
     
     if ([keyPath isEqualToString:@"invitationAccept"]) {
-        NSLog(@"Invitation accepted\n");
+        NSLog(@"\n\n\n\n\nInvitation accepted\n\n\n\n\n");
         NSLog(@"%@", change);
     }
 }
+*/
 
 # pragma mark button click management
 - (IBAction)audioStreamStartButton:(id)sender {
