@@ -13,6 +13,7 @@
 
 @property (strong, nonatomic) id audioHandler;
 @property (strong, nonatomic) id connectionHandler;
+@property (weak, nonatomic) MCSession *session;
 
 @property (weak, nonatomic) IBOutlet UIButton *audioButton;
 @property (weak, nonatomic) IBOutlet UIButton *connectionButton;

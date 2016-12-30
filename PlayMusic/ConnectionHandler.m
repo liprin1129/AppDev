@@ -66,14 +66,11 @@ BOOL const kProgrammaticDiscovery = NO;
 #pragma mark Setup Sending Stream
 - (void) startStream{
     NSError *error;
-    if ([[self.session connectedPeers] count] == 0) {
-        NSLog(@"Connection is required\n");
-    } else{
-        self.outputStream = [self.session startStreamWithName:self.streamName toPeer:[self.session connectedPeers][0] error:&error];
-        self.outputStream.delegate = self.objectID;
-        [self.outputStream scheduleInRunLoop:[NSRunLoop mainRunLoop] forMode:NSDefaultRunLoopMode];
-        [self.outputStream open];
-    }
+    
+    self.outputStream = [self.session startStreamWithName:self.streamName toPeer:[self.session connectedPeers][0] error:&error];
+    self.outputStream.delegate = self.objectID;
+    [self.outputStream scheduleInRunLoop:[NSRunLoop mainRunLoop] forMode:NSDefaultRunLoopMode];
+    [self.outputStream open];
 }
 
 #pragma mark MCNearbyServiceAdvertiserDelegate method
