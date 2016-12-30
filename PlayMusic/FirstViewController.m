@@ -59,14 +59,18 @@
 #pragma mark MCBrowserViewControllerDelegate methods
 - (void)browserViewControllerDidFinish:(MCBrowserViewController *)browserViewController{
     [browserViewController dismissViewControllerAnimated:YES completion:nil];
+    
+    // check the number of connections
+    self.session = (MCSession*)[self.connectionHandler session];
+    NSLog(@"\n %lu \n", (unsigned long)[[self.session connectedPeers] count]);
 }
 
 - (void)browserViewControllerWasCancelled:(MCBrowserViewController *)browserViewController{
     [browserViewController dismissViewControllerAnimated:YES completion:nil];
     
     // check the number of connections
-    MCSession *session = (MCSession*)[self.connectionHandler session];
-    NSLog(@"%lu\n\n\n\n\n\n", (unsigned long)[[session connectedPeers] count]);
+    self.session = (MCSession*)[self.connectionHandler session];
+    NSLog(@"\n %lu \n", (unsigned long)[[self.session connectedPeers] count]);
 }
 
 # pragma mark button click management
@@ -89,12 +93,18 @@
 }
 
 - (IBAction)connectedStreamStartButton:(id)sender {
-    if (!self.streamButton.selected) {
+    if (!self.streamButton.selected && ([[self.session connectedPeers] count] > 0)) {
         [self.connectionHandler startStream];
-        NSLog(@"\n\n stream opened");
+        NSLog(@"\n stream opened \n");
         
         self.streamButton.selected = YES;
-    } else {
+    } else if (!self.streamButton.selected && ([[self.session connectedPeers] count] == 0)) {
+        UIAlertController *connectionAlert = [UIAlertController alertControllerWithTitle:@"Streaming Error!" message:@"You must have at least one connection to a peer" preferredStyle:UIAlertControllerStyleAlert];
+        UIAlertAction *connectionAlertAction = [UIAlertAction actionWithTitle:@"OK" style:UIAlertActionStyleDefault handler:nil];
+        [connectionAlert addAction:connectionAlertAction];
+        [self presentViewController:connectionAlert animated:YES completion:nil];
+    } else if (self.streamButton.selected && ([[self.session connectedPeers] count] > 0)){
+        NSLog(@"\n stream closed \n");
         self.streamButton.selected = NO;
     }
 }
