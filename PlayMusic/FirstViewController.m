@@ -77,11 +77,11 @@
 - (IBAction)audioStartButton:(id)sender {
     if (!self.audioButton.selected) {
         
-        [self.audioHandler startAUGraph];
+        [self.audioHandler startIOUnit];
         self.audioButton.selected = YES;
     } else {
         
-        [self.audioHandler stopAUGraph];
+        [self.audioHandler stopIOUnit];
         self.audioButton.selected = NO;
     }
 }
