@@ -8,6 +8,34 @@
 
 #import "AudioInOutHandler.h"
 
+struct CallbackData {
+    AudioUnit rInOutAudioUnit;
+} callbackDataStruct = {NULL};
+
+static OSStatus inputRenderCallback (
+                                     
+                                     void                        *inRefCon,      // A pointer to a struct containing the complete audio data
+                                     //    to play, as well as state information such as the
+                                     //    first sample to play on this invocation of the callback.
+                                     AudioUnitRenderActionFlags  *ioActionFlags, // Unused here. When generating audio, use ioActionFlags to indicate silence
+                                     //    between sounds; for silence, also memset the ioData buffers to 0.
+                                     const AudioTimeStamp        *inTimeStamp,   // Unused here.
+                                     UInt32                      inBusNumber,    // The mixer unit input bus that is requesting some new
+                                     //        frames of audio data to play.
+                                     UInt32                      inNumberFrames, // The number of frames of audio to provide to the buffer(s)
+                                     //        pointed to by the ioData parameter.
+                                     AudioBufferList             *ioData         // On output, the audio data to play. The callback's primary
+//        responsibility is to fill the buffer(s) in the
+//        AudioBufferList.
+) {
+    OSStatus statusError;
+    statusError = AudioUnitRender(callbackDataStruct.rInOutAudioUnit, ioActionFlags, inTimeStamp, 1, inNumberFrames, ioData);
+    //printf ("SineWaveRenderProc needs %u frames at %f\n", (unsigned int)inNumberFrames, CFAbsoluteTimeGetCurrent());
+    if (statusError != noErr) NSLog(@"Error: AudioUnitRender \n\n");
+    
+    return statusError;
+}
+
 @implementation AudioInOutHandler
 
 - (id)init {
@@ -28,11 +56,6 @@
     }
 }
 
-/*
- - (void) testCheckNSError{
- [AlertPopUpControllerViewController popUpAlert];
- }
- */
 - (void) CheckStatusError:(OSStatus)error errorMessage:(NSString *)operation{
     if (error == noErr) NSLog(@"Good: %@ \n\n", operation);
     else {
@@ -48,7 +71,6 @@
     
     NSError *audioSessionError = nil;
     AVAudioSession *sessionInstance = [AVAudioSession sharedInstance];
-    
     
     // set the session's sample rate
     [sessionInstance setPreferredSampleRate:self.graphSampleRate error:&audioSessionError];
@@ -69,72 +91,90 @@
 # pragma mark Specify the Audio Units You Want
 - (void) setupAudioUnits {
     NSLog (@"\nConfiguring and then initializing audio processing graph\n");
-    OSStatus statusError;
     
-    // Create a new instance of AURemoteIO
-    AudioComponentDescription ioUnitDescription;
+    //............................................................................
+    // 1. Create a new instance of AURemoteIO
+    //............................................................................
+    
+    // Specify the audio unit component descriptions for the audio units to be
+    //    added to the graph.
+    AudioComponentDescription ioUnitDescription;        // I/O unit
     ioUnitDescription.componentType         = kAudioUnitType_Output;
     ioUnitDescription.componentSubType      = kAudioUnitSubType_RemoteIO;
     ioUnitDescription.componentManufacturer = kAudioUnitManufacturer_Apple;
     ioUnitDescription.componentFlags        = 0;
     ioUnitDescription.componentFlagsMask    = 0;
     
-    // Build an Audio Processing Graph
-    statusError = NewAUGraph(&processingGraph);
-    [self CheckStatusError:statusError errorMessage:@"create new AUGraph"];
+    // Finds the next component that matches a specified AudioComponentDescription
+    // structure after a specified audio component.
+    AudioComponent audioComponent = AudioComponentFindNext(NULL, &ioUnitDescription);
+    [self CheckStatusError:AudioComponentInstanceNew(audioComponent, &ioUnitInstance) errorMessage:@"couldn't create a new instance of AURemoteIO"];
     
-    AUNode ioNode;
     
-    statusError = AUGraphAddNode(processingGraph, &ioUnitDescription, &ioNode);
-    [self CheckStatusError:statusError errorMessage:@"add node"];
+    //............................................................................
+    // 2. Enable input and output on AURemoteIO
+    //
+    //  Input is enabled on the input scope of the input element
+    //  Output is enabled on the output scope of the output element
+    //............................................................................
     
-    statusError = AUGraphOpen(processingGraph);
-    [self CheckStatusError:statusError errorMessage:@"open AUGraph"];
+    UInt32 one = 1;
+    [self CheckStatusError:AudioUnitSetProperty(ioUnitInstance, kAudioOutputUnitProperty_EnableIO, kAudioUnitScope_Input, 1, &one, sizeof(one)) errorMessage:@"enable input on AURemoteIO"];
+    [self CheckStatusError:AudioUnitSetProperty(ioUnitInstance, kAudioOutputUnitProperty_EnableIO, kAudioUnitScope_Output, 0, &one, sizeof(one)) errorMessage:@"enalbe output on AURemoteIO"];
     
-    statusError = AUGraphNodeInfo(processingGraph, ioNode, NULL, &ioUnitInstance);
-    [self CheckStatusError:statusError errorMessage:@"get AUGraph node info"];
+    //............................................................................
+    // 3. Explicitly set the input and output client formats
+    //
+    // sample rate = 44100, num channels = 1, format = 32 bit floating point
+    //............................................................................
     
-    // Enable input and output on AURemoteIO
-    // Input is enabled on the input scope of the input element
-    AudioUnitElement ioUnitInputBus = 1;
-    UInt32 enableInput = 1;
-    statusError = AudioUnitSetProperty(ioUnitInstance, kAudioOutputUnitProperty_EnableIO, kAudioUnitScope_Input, ioUnitInputBus, &enableInput, sizeof(enableInput));
-    [self CheckStatusError:statusError errorMessage:@"enable input on AURemoteIO"];
+    [self mAaudioFormat:&myASBD mSampleRate:self.graphSampleRate mFormatID:kAudioFormatLinearPCM mFormatFlags:kAudioFormatFlagIsSignedInteger mBytesPerPacket:2 mFramesPerPacket:1 mBytesPerFrame:2 mChannelsPerFrame:1 mBitsPerChannel:16];
     
-    /* This is default setting, so there's no need to implement this code */
+    // Set audio stream format for output of input element
+    [self CheckStatusError:AudioUnitSetProperty(ioUnitInstance, kAudioUnitProperty_StreamFormat, kAudioUnitScope_Output, 1, &myASBD, sizeof(myASBD)) errorMessage:@"set the input client format on AURemoteIO"];
+    
+    // Set audio stream format for input of output element
+    [self CheckStatusError:AudioUnitSetProperty(ioUnitInstance, kAudioUnitProperty_StreamFormat, kAudioUnitScope_Input, 0, &myASBD, sizeof(myASBD)) errorMessage:@"set the output client format on AURemoteIO"];
     /*
-     AudioUnitElement ioUnitOutputBus = 0;
-     UInt32 enableOutput = 1;
-     statusError = AudioUnitSetProperty(ioUnitInstance, kAudioOutputUnitProperty_EnableIO, kAudioUnitScope_Output, ioUnitOutputBus, &enableOutput, sizeof(enableOutput));
-     [self CheckStatusError:statusError errorMessage:@"enable Output on AURemoteIO"];
-     */
+    // Set the MaximumFramesPerSlice property. This property is used to describe to an audio unit the maximum number of samples it will be asked to produce on any single given call to AudioUnitRender.
+    UInt32 maxFramesPerSlice = 4096;
+    [self CheckStatusError:AudioUnitSetProperty(ioUnitInstance, kAudioUnitProperty_MaximumFramesPerSlice, kAudioUnitScope_Global, 0, &maxFramesPerSlice, sizeof(UInt32)) errorMessage:@"set max frames per slice on AURemoteIO"];
+    
+    // Get the property value back from AURemoteIO. We are going to use this value to allocate buffers accordingly
+    UInt32 propSize = sizeof(UInt32);
+    [self CheckStatusError:AudioUnitGetProperty(ioUnitInstance, kAudioUnitProperty_MaximumFramesPerSlice, kAudioUnitScope_Global, 0, &maxFramesPerSlice, &propSize) errorMessage:@"get max frames per slice on AURemoteIO"];
+    */
+    
+    //............................................................................
+    // 4. We need references to certain data in the render callback
+    //
+    // This simple struct is used to hold that information
+    //............................................................................
+    callbackDataStruct.rInOutAudioUnit = ioUnitInstance;
     
     
-    // Set output audio stream format description of input element
-    [self mAaudioFormat:&myASBD mSampleRate:44100.0 mFormatID:kAudioFormatLinearPCM mFormatFlags:kAudioFormatFlagIsSignedInteger mBytesPerPacket:2 mFramesPerPacket:1 mBytesPerFrame:2 mChannelsPerFrame:1 mBitsPerChannel:16];
+    //............................................................................
+    // 5. Set the render callback on AURemoteIO
+    //
+    // Attach the input render callback to the input scope of the output element
+    //............................................................................
+    AURenderCallbackStruct renderCallbackStruct;
+    renderCallbackStruct.inputProc = &inputRenderCallback;
+    renderCallbackStruct.inputProcRefCon = NULL;
+    [self CheckStatusError:AudioUnitSetProperty(ioUnitInstance, kAudioUnitProperty_SetRenderCallback, kAudioUnitScope_Input, 0, &renderCallbackStruct, sizeof(renderCallbackStruct)) errorMessage:@"set render callback on AURemoteIO"];
     
-    statusError = AudioUnitSetProperty(ioUnitInstance, kAudioUnitProperty_StreamFormat, kAudioUnitScope_Output, ioUnitInputBus, &myASBD, sizeof(myASBD));
-    [self CheckStatusError:statusError errorMessage:@"enable output on AURemoteIO"];
-    
-    //Connecting Audio Units using the Audio Processing Graph API
-    statusError = AUGraphConnectNodeInput(processingGraph, ioNode, 1, ioNode, 0);
-    [self CheckStatusError:statusError errorMessage:@"connet audio units"];
-    
-    //Initialize Audio Processing Graph
-    statusError = AUGraphInitialize(processingGraph);
-    //if (statusError) { printf("AUGraphInitialize result %d %08X %4.4s\n", (int)statusError, (unsigned int)statusError, (char*)&statusError); return; }
-    [self CheckStatusError:statusError errorMessage:@"initialise AUGraph"];
+    //............................................................................
+    // 6. Initialize the AURemoteIO instance
+    //............................................................................
+    [self CheckStatusError:AudioUnitInitialize(ioUnitInstance) errorMessage:@"initialise AURemoteIO instance"];
 }
 
-- (void) startAUGraph{
-    // NSLog (@"Starting audio processing graph");
-    OSStatus statusError = AUGraphStart(processingGraph);
-    [self CheckStatusError:statusError errorMessage:@"start audio processing graph"];
+- (void) startIOUnit{
+    [self CheckStatusError:AudioOutputUnitStart(ioUnitInstance) errorMessage:@"start audio IO unit"];
 }
 
-- (void) stopAUGraph{
-    OSStatus statusError = AUGraphStop(processingGraph);
-    [self CheckStatusError:statusError errorMessage:@"stop audio processing graph"];
+- (void) stopIOUnit{
+    [self CheckStatusError:AudioOutputUnitStop(ioUnitInstance) errorMessage:@"stop audio IO unit"];
 }
 
 

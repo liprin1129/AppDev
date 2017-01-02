@@ -28,7 +28,7 @@
        mBitsPerChannel:(UInt32)bitsPerChannel;
 
 // control object
-- (void) startAUGraph;
-- (void) stopAUGraph;
+- (void) startIOUnit;
+- (void) stopIOUnit;
 
 @end
