@@ -11,13 +11,16 @@
 
 @interface AudioInOutHandler : NSObject{
     AUGraph processingGraph;
-    AudioUnit ioUnitInstance;
     AudioStreamBasicDescription myASBD;
 }
 
 @property (nonatomic, assign) double graphSampleRate;
 @property (nonatomic, assign) NSTimeInterval ioBufferDuration;
 
+@property (assign, nonatomic) AudioUnit ioUnit;
+@property (assign, nonatomic) AudioUnit mixerUnit;
+
+//@property (nonatomic, assign) AudioUnit ioUnitInstance;
 - (void) CheckNSError:(NSError*)error errorMessage:(NSString *)operation;
 - (void) CheckStatusError:(OSStatus)error errorMessage:(NSString *)operation;
 
